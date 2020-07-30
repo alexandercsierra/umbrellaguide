@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import { useOktaAuth } from '@okta/okta-react';
 // import Loader from './Loader'
@@ -12,20 +12,20 @@ const Login = () => {
     })
 
     const { authState, authService } = useOktaAuth();
-    // const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState(null);
     
     // console.log(userInfo)
 
-    // useEffect(() => {
-    //     if (!authState.isAuthenticated) {
-    //       // When user isn't authenticated, forget any user info
-    //       setUserInfo(null);
-    //     } else {
-    //       authService.getUser().then((info) => {
-    //         setUserInfo(info);
-    //       });
-    //     }
-    //   }, [authState, authService]);
+    useEffect(() => {
+        if (!authState.isAuthenticated) {
+          // When user isn't authenticated, forget any user info
+          setUserInfo(null);
+        } else {
+          authService.getUser().then((info) => {
+            setUserInfo(info);
+          });
+        }
+      }, [authState, authService]);
 
 
       const login = async () => {

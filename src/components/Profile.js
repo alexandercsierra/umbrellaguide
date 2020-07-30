@@ -1,45 +1,84 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import ReviewCard from './ReviewCard'
 import {useHistory} from 'react-router-dom'
+import {axiosWithAuth} from '../utls/axiosWithAuth'
+import Search from './Search'
 
-const Profile = () => {
+const Profile = ({addPlaces}) => {
+
+    const[user, setUser]  = useState({})
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [reviews, setReviews] = useState([])
+
+
+    useEffect(()=>{
+        let isMounted = true;
+
+        if(isMounted){
+            addPlaces();
+            setTimeout(()=>{setIsLoaded(true)}, 200)
+        }
+
+        axiosWithAuth().get('/api/auth')
+                .then(res=>{
+                    if(isMounted){
+                        setUser(res.data[0])
+                    }
+                    
+                })
+                .catch(err=>console.log(err))
+
+
+            axiosWithAuth().get(`/api/reviews/${1}`)
+                .then(res=>{
+                    if(isMounted){
+                        setReviews(res.data)
+                    }
+                    
+                })
+                .catch(err=>console.log(err))
+
+
+
+        return () => {isMounted = false}
+    },[])
 
     const history = useHistory();
-    const [reviews, setReviews] = useState([
-        {
-            id: 1,
-            name: 'Bliss Healthcare',
-            address: '12345 Conway Ave. Orlando, FL 32822',
-            rating: 4,
-            gn_bath: true
+    // const [reviews, setReviews] = useState([
+    //     {
+    //         id: 1,
+    //         name: 'Bliss Healthcare',
+    //         address: '12345 Conway Ave. Orlando, FL 32822',
+    //         rating: 4,
+    //         gn_bath: true
             
-        },
-        {
-            id: 2,
-            name: 'ABC Massage',
-            address: '12345 Crystal Lake Blvd. Orlando, FL 32822',
-            rating: 2.5,
-            gn_bath: false
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'ABC Massage',
+    //         address: '12345 Crystal Lake Blvd. Orlando, FL 32822',
+    //         rating: 2.5,
+    //         gn_bath: false
             
-        },
-        {
-            id: 3,
-            name: 'The Peacock Room',
-            address: '12345 Mills Ave. Orlando, FL 32822',
-            rating: 3,
-            gn_bath: false
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'The Peacock Room',
+    //         address: '12345 Mills Ave. Orlando, FL 32822',
+    //         rating: 3,
+    //         gn_bath: false
             
-        },
-        {
-            id: 4,
-            name: 'Lou Gardens',
-            address: '12345 Mills Ave. Orlando, FL 32822',
-            rating: 1,
-            gn_bath: false
+    //     },
+    //     {
+    //         id: 4,
+    //         name: 'Lou Gardens',
+    //         address: '12345 Mills Ave. Orlando, FL 32822',
+    //         rating: 1,
+    //         gn_bath: false
             
-        }
-    ])
+    //     }
+    // ])
 
 
 
@@ -50,8 +89,9 @@ const Profile = () => {
                 <SearchDiv>
                     <Title>Search for a business</Title>
                     <InputDiv>
-                        <Input placeholder="search"/>
-                        <Button>🔎</Button>
+                    {isLoaded && <Search/>}
+                        {/* <Input placeholder="search"/> */}
+                        {/* <Button>🔎</Button> */}
                     </InputDiv>
                 </SearchDiv>
                 <UserDiv>
@@ -66,7 +106,7 @@ const Profile = () => {
                 </UserDiv>
             </Header>
             <ReviewContainer>
-                {reviews.map(rev=><ReviewCard key={rev.id} rev={rev}/>)}
+                {reviews && reviews.map(rev=><ReviewCard key={rev.id} rev={rev}/>)}
             </ReviewContainer>
         </Container>
     )

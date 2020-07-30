@@ -1,6 +1,6 @@
 const CLIENT_ID = process.env.REACT_APP_CLIENT_ID
 const ISSUER = process.env.REACT_APP_ISSUER
-const OKTA_TESTING_DISABLEHTTPSCHECK = process.env.OKTA_TESTING_DISABLEHTTPSCHECK || false;
+const OKTA_TESTING_DISABLEHTTPSCHECK = process.env.OKTA_TESTING_DISABLEHTTPSCHECK || true;
 
 export default {
     oidc: {

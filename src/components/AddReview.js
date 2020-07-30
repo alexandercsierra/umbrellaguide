@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import StarRating from './StarRating'
+import {axiosWithAuth} from '../utls/axiosWithAuth'
 
 const AddReview = () => {
 
 
     const [review, setReview] = useState({
-        name:"",
         text:"",
         gn_bath: false
     })
@@ -26,7 +26,9 @@ const AddReview = () => {
         e.preventDefault();
         let totalReview = {...review};
         totalReview.rating = rating
-        console.log('review', totalReview)
+        axiosWithAuth().post(`/api/reviews/${1}`, totalReview)
+            .then(res=>console.log(res))
+            .catch(err=>console.log(err))
     }
 
 
@@ -35,7 +37,7 @@ const AddReview = () => {
         <Container>
             <Title>Add a Review</Title>
             <Form onSubmit={onSubmit}>
-                <Input name="name" placeholder="name" value={review.name} onChange={handleChange}/>
+                {/* <Input name="name" placeholder="name" value={review.name} onChange={handleChange}/> */}
                 <TextArea rows="10" cols="50" name="text" placeholder="text" value={review.text} onChange={handleChange}/>
                 <label htmlFor="gn_bath">Gender Neutral Bathroom</label>
                 <Input id="gn_bath" name="gn_bath" checked={review.gn_bath} type="checkbox" onChange={()=>setReview({...review, gn_bath: !review.gn_bath})}/>
